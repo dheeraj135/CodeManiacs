@@ -24,7 +24,8 @@ exports.postSignUp = function (req, res) {
                 username: req.body.username,
                 email: req.body.email,
                 /**By default the admin access is not provided */
-                isAdmin: false
+                isAdmin: false,
+                isProblemSetter: false
             });
             /**Registering the new user */
             user.register(acc, req.body.password, (err, user) => {
@@ -82,8 +83,12 @@ exports.getLogout = function (req, res) {
 }
 
 /**Implementing the routing guards */
-exports.enforceAuthentication = (loginRequired = true, adminRequired = false) => (req, res, next) => {
+exports.enforceAuthentication = (loginRequired = true, adminRequired = false, setterRequired = false) => (req, res, next) => {
     if (loginRequired === req.isAuthenticated()) {
+        if(setterRequired && (req.user.isProblemSetter || req.user.isAdmin)){
+            next();
+        }
+        
         if (!adminRequired || req.user.isAdmin) {
             next();
         } else {
