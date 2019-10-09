@@ -84,15 +84,23 @@ exports.getLogout = function (req, res) {
 
 /**Implementing the routing guards */
 exports.enforceAuthentication = (loginRequired = true, adminRequired = false, setterRequired = false) => (req, res, next) => {
+    console.log(req.user);
     if (loginRequired === req.isAuthenticated()) {
-        if(setterRequired && (req.user.isProblemSetter || req.user.isAdmin)){
-            next();
+        if(setterRequired )
+        {
+            if(req.user.isProblemSetter && !req.user.isAdmin) {
+                next();
+            }
+            else{
+                res.redirect('/');
+            }
         }
-        
-        if (!adminRequired || req.user.isAdmin) {
-            next();
-        } else {
-            res.redirect('/');
+        else{
+            if (!adminRequired || req.user.isAdmin) {
+                next();
+            } else {
+                res.redirect('/');
+            }
         }
     } else if (loginRequired) {
         res.redirect('/user/login');

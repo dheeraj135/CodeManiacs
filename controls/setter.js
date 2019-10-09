@@ -24,7 +24,7 @@ helper.addQuestion = async function (req, res, next) {
 
     const ques = req.body.ques; // problem statement
     const tc = req.body.testcases; // testcases
-    req.body.ques.problemSetter=req.user.name;
+    req.body.ques.problemSetter=req.user.username;
 
     try {
         await total.countDocuments({}, async (err, cnt) => {
@@ -67,5 +67,53 @@ helper.addQuestion = async function (req, res, next) {
         res.send("Problem could not be submitted");
     }
 };
+
+/**POST: deleting the problem qID 
+ * route: /problems/dlt_prob/:qID
+*/
+helper.deleteProblem = async (req, res, next) => {
+    /**Finding question by qID */
+    Question.deleteOne({ qID: req.params.qID, problemSetter: req.user.username })
+        .then((data) => {
+            /**Deleted successfully */
+            res.redirect("/problems");
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+}
+
+helper.editQuestion = async function (req, res, next) {
+    
+    console.log(req.body.qID);
+    console.log(req.body.ques);
+    // console.log(req.body.testcases);
+    req.body.ques.problemSetter=req.user.username;
+    try {
+        /**Finding question and testcase by it's qID and updating */
+        await Question.findOneAndUpdate({ "qID": req.body.qID, "problemSetter": req.user.username }, req.body.ques);
+        await TC.findOneAndUpdate({ "qID": req.body.qID }, req.body.testcases);
+        res.send("Question was updated");
+    } catch (error) {
+        res.send("Couldn't update the question");
+        console.log(error);
+    }
+};
+/**Display page for editing the existing problem having qID = params:qID 
+ * route: /admin/edit/:qID
+*/
+helper.getQuestion = async (req, res, next) => {
+    /**Finding question and tescase using the qID */
+    const ques = await Question.findOne({ "qID": req.params.qID,"problemSetter":req.user.username });
+    const t_case = await TC.findOne({ "qID": req.params.qID });
+    console.log(ques);
+    console.log(t_case);
+    if(ques==null)
+    {
+        res.redirect("/problems");
+    }
+    else
+        res.render("problem_edit", { ques, t_case });
+}
 
 module.exports = helper;

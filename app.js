@@ -11,7 +11,7 @@ var localStrategy = require('passport-local').Strategy;
 var publicRoute = require("./routes/index");
 var adminRoute = require("./routes/admin");
 var usersRoute = require("./routes/users");
-var problemRoute = require("./routes/problem")
+var problemRoute = require("./routes/problems")
 var problems = require("./controls/problems");
 var enforceAuthentication = require('./controls/auth').enforceAuthentication;
 var lang = require("./config/lang")
@@ -92,7 +92,7 @@ app.post("*", (req, res, next) => {
 
 app.use("/", publicRoute);
 app.use("/user", usersRoute);
-app.use("/problems", problemRoute);
+app.use("/problems", enforceAuthentication(true,false,true),problemRoute);
 app.use("/admin", enforceAuthentication(true, true), adminRoute);
 
 /**Display the page to submit problem qID */

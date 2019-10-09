@@ -21,6 +21,9 @@
             <% if (locals.user && locals.user.isAdmin === true) { %>
             <div class="nav"><span><strong><a href="/admin" style="color: rgb(153, 0, 0);">ADMIN</a></strong></span></div>
             <% } %>
+            <% if (locals.user && locals.user.isProblemSetter === true && locals.user.isAdmin === false) { %>
+            <div class="nav"><span><strong><a href="/problems" style="color: rgb(10,10,155)">SETTER</a></strong></span></div>
+            <% }%>
             <% if (locals.user) { %>
             <div class="nav"><span><a href="/user/profile">PROFILE</a></span></div>
             <div class="nav"><span><a href="/user/logout">SIGN OUT</a></span></div>
