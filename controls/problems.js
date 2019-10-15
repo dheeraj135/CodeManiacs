@@ -299,6 +299,7 @@ helper.submitContestSolution = async (req, res, next) => {
                 console.log(newSubmission);
             });
 
+
             var temp;
             // console.log("Contest code",contestData[0].code);
             participation.findOne({"username": newSubmission.username, "contestCode": contestData[0].code }, 
@@ -317,6 +318,7 @@ helper.submitContestSolution = async (req, res, next) => {
                 //     check = true;
                 // }
 
+
                 if(check){
                     // Check if the current Question is already solved or not.
                     var current_problem_exists = false;
@@ -326,7 +328,6 @@ helper.submitContestSolution = async (req, res, next) => {
                             break;
                         }
                     }
-
                     /* 
                        If Verdict is Accepted and Question was not previously solved then,
                        update score, penalty and add it to solved questions.
